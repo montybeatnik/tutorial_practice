@@ -40,6 +40,7 @@ func run() error {
 		// db:     db,
 		router: r,
 	}
+	srv.router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 	srv.routes()
 	log.Println("server listening on localhost:8000...")
 	if err := http.ListenAndServe(":8000", srv.router); err != nil {

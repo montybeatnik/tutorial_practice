@@ -1,0 +1,25 @@
+body {
+    background-color: darkslateblue;
+}
+
+h1 {
+    margin: auto;
+}
+
+#main {
+    min-height: 100vh; /* height of the browser viewport */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#hostname {
+    border: dimgray solid 4px;
+}
+
+button {
+    border: indigo solid 4px;
+    height: 26px;
+    width
+}
