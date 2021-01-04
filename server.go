@@ -31,3 +31,13 @@ func (s *server) handleAbout() http.HandlerFunc {
 		fmt.Fprintf(w, "about")
 	}
 }
+
+// func (s *server) handleDeviceShowVersion() http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		var swVer autochecks.SoftwareVersion
+// 		_, err := swVer.Run("192.168.1.1")
+// 		if err != nil {
+// 			fmt.Fprintf(w, err)
+// 		}
+// 	}
+// }
