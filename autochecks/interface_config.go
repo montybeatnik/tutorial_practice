@@ -5,7 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	"github.com/montybeatnik/web_server_for_network_devices/devcon"
+	"github.com/montybeatnik/tutorial_practice/devcon"
 )
 
 // InterfaceConfig represents the xml formatted 'show configuration interfaces {INTERFACE}'

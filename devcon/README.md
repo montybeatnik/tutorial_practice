@@ -8,7 +8,7 @@ See an example below.
 
 ```golang
 import (
-    "github.com/montybeatnik/web_server_for_network_devices/devcon"
+    "github.com/montybeatnik/tutorial_practice/devcon"
 )
 func main() {
     // build the ConnInfo with the constructor

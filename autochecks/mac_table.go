@@ -5,7 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	"github.com/montybeatnik/web_server_for_network_devices/devcon"
+	"github.com/montybeatnik/tutorial_practice/devcon"
 )
 
 // MacTable represents the XML format of the 'show ethernet-switching table {VLAN}' output
