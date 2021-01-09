@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/montybeatnik/tutorial_practice/autochecks"
+
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
@@ -32,12 +34,12 @@ func (s *server) handleAbout() http.HandlerFunc {
 	}
 }
 
-// func (s *server) handleDeviceShowVersion() http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		var swVer autochecks.SoftwareVersion
-// 		_, err := swVer.Run("192.168.1.1")
-// 		if err != nil {
-// 			fmt.Fprintf(w, err)
-// 		}
-// 	}
-// }
+func (s *server) handleDeviceShowVersion() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var swVer autochecks.SoftwareVersion
+		_, err := swVer.Run("192.168.1.1")
+		if err != nil {
+			fmt.Fprintf(w, err)
+		}
+	}
+}
