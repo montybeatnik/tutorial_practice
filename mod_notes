@@ -1,0 +1,6 @@
+dharmaBum-2:tutorial_practice chrishern$ env GIT_TERMINAL_PROMPT=1 go get github.com/montybeatnik/tutorial_practice
+go: github.com/montybeatnik/tutorial_practice upgrade => v0.0.0-20210109135917-7003853071e8
+go get: github.com/montybeatnik/tutorial_practice@v0.0.0-20210109135917-7003853071e8/go.mod: verifying module: github.com/montybeatnik/tutorial_practice@v0.0.0-20210109135917-7003853071e8/go.mod: reading https://sum.golang.org/lookup/github.com/montybeatnik/tutorial_practice@v0.0.0-20210109135917-7003853071e8: 410 Gone
+        server response:
+        not found: github.com/montybeatnik/tutorial_practice@v0.0.0-20210109135917-7003853071e8: invalid version: git fetch -f origin refs/heads/*:refs/heads/* refs/tags/*:refs/tags/* in /tmp/gopath/pkg/mod/cache/vcs/f36a2312ed295b795c028bff091fb0748b67418cd18bff9ba79fd194c9c363dc: exit status 128:
+                fatal: could not read Username for 'https://github.com': terminal prompts disabled
