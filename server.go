@@ -37,9 +37,12 @@ func (s *server) handleAbout() http.HandlerFunc {
 func (s *server) handleDeviceShowVersion() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var swVer autochecks.SoftwareVersion
-		_, err := swVer.Run("192.168.1.1")
+		p := autochecks.Params{
+			IP: "192.168.1.1",
+		}
+		_, err := swVer.Run(p)
 		if err != nil {
-			fmt.Fprintf(w, err)
+			fmt.Fprintf(w, "success")
 		}
 	}
 }

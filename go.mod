@@ -1,4 +1,4 @@
-module github.com/montybeatnik/devcon
+module github.com/montybeatnik/tutorial_practice
 
 go 1.14
 
