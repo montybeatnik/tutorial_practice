@@ -9,3 +9,7 @@
 #hostname {
     border: dimgray solid 4px;
 }
+
+input {
+    text-align: center;
+}
