@@ -8,7 +8,7 @@ import (
 	"github.com/montybeatnik/tutorial_practice/driver"
 )
 
-func initializePSQL(t *testing.T) *sql.DB {
+func initializeSWPSQL(t *testing.T) *sql.DB {
 	conf := driver.PSQLConfig{
 		Host:     "localhost",
 		User:     "postgres",
@@ -28,7 +28,7 @@ func initializePSQL(t *testing.T) *sql.DB {
 }
 
 func TestDatastore(t *testing.T) {
-	db := initializePSQL(t)
+	db := initializeSWPSQL(t)
 	ver := NewSoftwareVersionStore(db)
 	testSoftwareVersionStorer_Create(t, ver)
 	testSoftwareVersionStorer_Get(t, ver)

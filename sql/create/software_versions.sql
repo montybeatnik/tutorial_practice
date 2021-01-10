@@ -1,5 +1,5 @@
 CREATE TABLE software_versions (
     id SERIAL PRIMARY KEY,
-    version text,
+    version text UNIQUE,
     created_at timestamp
 );
