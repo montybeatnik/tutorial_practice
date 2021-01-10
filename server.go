@@ -34,6 +34,17 @@ func (s *server) handleAbout() http.HandlerFunc {
 	}
 }
 
+func (s *server) handleOutline() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		t, err := template.ParseFiles("views/outline.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w, nil)
+	}
+}
+
 func (s *server) handleDeviceShowVersion() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var swVer autochecks.SoftwareVersion

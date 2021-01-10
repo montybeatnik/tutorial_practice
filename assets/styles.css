@@ -1,3 +1,7 @@
+/* body {
+    background-color: teal;
+} */
+
 #main {
     min-height: 100vh; /* height of the browser viewport */
     display: flex;
@@ -13,3 +17,8 @@
 input {
     text-align: center;
 }
+/*
+h1 {
+    text-decoration: underline;
+    text-decoration-color: white;
+} */
