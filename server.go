@@ -62,15 +62,6 @@ func (s *server) handleDeviceShowVersion() http.HandlerFunc {
 	}
 }
 
-// import (
-// 	"database/sql"
-// 	"fmt"
-
-// 	"github.com/montybeatnik/tutorial_practice/driver"
-// 	"github.com/montybeatnik/tutorial_practice/models"
-// 	"github.com/pkg/errors"
-// )
-
 func initializeDevPSQL() (*sql.DB, error) {
 	conf := driver.PSQLConfig{
 		Host:     "localhost",
