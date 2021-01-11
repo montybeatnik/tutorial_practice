@@ -4,9 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/montybeatnik/tutorial_practice/autochecks"
+	"github.com/montybeatnik/tutorial_practice/driver"
+	"github.com/montybeatnik/tutorial_practice/models"
+	"github.com/pkg/errors"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -55,5 +59,57 @@ func (s *server) handleDeviceShowVersion() http.HandlerFunc {
 		if err != nil {
 			fmt.Fprintf(w, "success")
 		}
+	}
+}
+
+// import (
+// 	"database/sql"
+// 	"fmt"
+
+// 	"github.com/montybeatnik/tutorial_practice/driver"
+// 	"github.com/montybeatnik/tutorial_practice/models"
+// 	"github.com/pkg/errors"
+// )
+
+func initializeDevPSQL() (*sql.DB, error) {
+	conf := driver.PSQLConfig{
+		Host:     "localhost",
+		User:     "postgres",
+		Password: "postgres",
+		Port:     5432,
+		DB:       "tutorial_practice",
+	}
+
+	var err error
+	db, err := driver.ConnectToPSQL(conf)
+	if err != nil {
+		return db, errors.Wrap(err, "could not connect to postgres")
+	}
+
+	return db, nil
+}
+
+func (s *server) handleDevice() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db, err := initializeDevPSQL()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		devService := models.NewDeviceStore(db)
+		d, err := devService.GetById(2)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		dev := struct {
+			hn    string
+			lo    string
+			model string
+			ven   string
+			ver   string
+		}{d.Hostname, d.Loopback, d.Model, d.Vendor, d.Version}
+
+		fmt.Fprintf(w, fmt.Sprintf("%v, %v, %v, %v, %v", dev.hn, dev.lo, dev.model, dev.ven, dev.ver))
 	}
 }
