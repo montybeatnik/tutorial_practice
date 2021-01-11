@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"testing"
 
 	"github.com/montybeatnik/tutorial_practice/driver"
@@ -23,7 +22,6 @@ func initializeSWPSQL(t *testing.T) *sql.DB {
 		t.Errorf("could not connect to sql, err:%v", err)
 	}
 
-	fmt.Println(db.Ping())
 	return db
 }
 
@@ -37,14 +35,35 @@ func TestDatastore(t *testing.T) {
 
 func testSoftwareVersionStorer_Create(t *testing.T, db SoftwareVersionStorer) {
 	testcases := []struct {
-		req      SoftwareVersion
-		response SoftwareVersion
+		req      Software
+		response Software
 	}{
-		{SoftwareVersion{ID: 1, Version: "12.1"}, SoftwareVersion{ID: 1, Version: "12.1"}},
-		{SoftwareVersion{ID: 2, Version: "14.2"}, SoftwareVersion{ID: 2, Version: "14.2"}},
+		{
+			Software{
+				ID:      1,
+				Version: "12.1",
+			},
+			Software{
+				ID:      1,
+				Version: "12.1",
+			},
+		},
+		{
+			Software{
+				ID:      2,
+				Version: "14.2",
+			},
+			Software{
+				ID:      2,
+				Version: "14.2",
+			},
+		},
 	}
 	for _, v := range testcases {
 		err := db.Create(v.req)
+		if err.Error() == "pq: duplicate key value violates unique constraint \"software_version_key\"" {
+			continue
+		}
 		if err != nil {
 			t.Errorf("problem creating test case: %v", err)
 		}
@@ -54,10 +73,10 @@ func testSoftwareVersionStorer_Create(t *testing.T, db SoftwareVersionStorer) {
 func testSoftwareVersionStorer_Get(t *testing.T, db SoftwareVersionStorer) {
 	testcases := []struct {
 		id   uint
-		resp SoftwareVersion
+		resp Software
 	}{
-		{1, SoftwareVersion{ID: 1, Version: "12.1"}},
-		{2, SoftwareVersion{ID: 2, Version: "14.2"}},
+		{1, Software{ID: 1, Version: "12.1"}},
+		{2, Software{ID: 2, Version: "14.2"}},
 	}
 	for _, v := range testcases {
 		resp, err := db.GetById(v.id)

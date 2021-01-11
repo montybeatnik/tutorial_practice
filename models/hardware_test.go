@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"testing"
 
 	"github.com/montybeatnik/tutorial_practice/driver"
@@ -23,7 +22,6 @@ func initializeHWPSQL(t *testing.T) *sql.DB {
 		t.Errorf("could not connect to sql, err:%v", err)
 	}
 
-	fmt.Println(db.Ping())
 	return db
 }
 
@@ -45,6 +43,9 @@ func testHardwareStorer_Create(t *testing.T, db HardwareStorer) {
 	}
 	for _, v := range testcases {
 		err := db.Create(v.req)
+		if err.Error() == "pq: duplicate key value violates unique constraint \"hardware_vendor_model_key\"" {
+			continue
+		}
 		if err != nil {
 			t.Errorf("problem creating test case: %v", err)
 		}

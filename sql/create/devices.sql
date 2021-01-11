@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS devices (
     id SERIAL PRIMARY KEY,
-    hostname text,
+    created_at TIMESTAMP,
+    hostname text UNIQUE,
     loopback text,
-    models_id INTEGER REFERENCES models (id),
-    software_version_id INTEGER REFERENCES software_versions (id)
+    hardware_id INTEGER REFERENCES hardware (id),
+    software_id INTEGER REFERENCES software (id)
 );
