@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/montybeatnik/tutorial_practice/autochecks"
 	"github.com/montybeatnik/tutorial_practice/driver"
@@ -82,25 +83,30 @@ func initializeDevPSQL() (*sql.DB, error) {
 
 func (s *server) handleDevice() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		idStr := vars["id"]
+		id, convErr := strconv.Atoi(idStr)
+		if convErr != nil {
+			log.Println("id is not an integer!", convErr)
+		}
 		db, err := initializeDevPSQL()
 		if err != nil {
 			log.Println(err)
 			return
 		}
 		devService := models.NewDeviceStore(db)
-		d, err := devService.GetById(2)
+		d, err := devService.GetById(uint(id))
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		dev := struct {
-			hn    string
-			lo    string
-			model string
-			ven   string
-			ver   string
-		}{d.Hostname, d.Loopback, d.Model, d.Vendor, d.Version}
 
-		fmt.Fprintf(w, fmt.Sprintf("%v, %v, %v, %v, %v", dev.hn, dev.lo, dev.model, dev.ven, dev.ver))
+		t, err := template.ParseFiles("views/device_info.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w, d)
+		// fmt.Fprintf(w, fmt.Sprintf("%v, %v, %v, %v, %v", dev.hn, dev.lo, dev.model, dev.ven, dev.ver))
 	}
 }
