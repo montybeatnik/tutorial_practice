@@ -36,7 +36,12 @@ func (s *server) handleHome() http.HandlerFunc {
 
 func (s *server) handleAbout() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "about")
+		t, err := template.ParseFiles("views/about.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w, nil)
 	}
 }
 

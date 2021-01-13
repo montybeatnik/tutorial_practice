@@ -17,6 +17,15 @@
 input {
     text-align: center;
 }
+
+nav {
+    background-color: #aa35b5;
+}
+
+.navbar {
+    background-color: #22A8C2;
+}
+
 /*
 h1 {
     text-decoration: underline;
