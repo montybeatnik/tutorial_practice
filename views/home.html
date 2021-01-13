@@ -11,8 +11,8 @@
     <article id="main" class="bg-dark">
         <div class="container jumbotron text-center bg-info">
         <header><h1>Device Lookup</h1></header>
-        <form action="#">
-            <input class="form-control" type="text" placeholder="hostname">
+        <form action="/device" method="POST">
+            <input class="form-control" name="hostname" type="text" placeholder="hostname">
             <button type="submit" class="btn btn-success btn-block">Submit</button>
         </form>
         </div>

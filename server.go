@@ -14,6 +14,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	_ "github.com/lib/pq"
 )
 
@@ -81,7 +82,7 @@ func initializeDevPSQL() (*sql.DB, error) {
 	return db, nil
 }
 
-func (s *server) handleDevice() http.HandlerFunc {
+func (s *server) handleDeviceID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		idStr := vars["id"]
@@ -96,6 +97,50 @@ func (s *server) handleDevice() http.HandlerFunc {
 		}
 		devService := models.NewDeviceStore(db)
 		d, err := devService.GetById(uint(id))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		t, err := template.ParseFiles("views/device_info.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w, d)
+		// fmt.Fprintf(w, fmt.Sprintf("%v, %v, %v, %v, %v", dev.hn, dev.lo, dev.model, dev.ven, dev.ver))
+	}
+}
+
+type deviceForm struct {
+	Hostname string `schema:"hostname"`
+}
+
+// handleDeviceHostname PUT
+func (s *server) handleDeviceHostname() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var decoder = schema.NewDecoder()
+		err := r.ParseForm()
+		if err != nil {
+			log.Println(err)
+		}
+
+		var form deviceForm
+
+		// r.PostForm is a map of our POST form values
+		err = decoder.Decode(&form, r.PostForm)
+		if err != nil {
+			// Handle error
+		}
+
+		db, err := initializeDevPSQL()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		devService := models.NewDeviceStore(db)
+		d, err := devService.GetByHostname(form.Hostname)
 		if err != nil {
 			log.Println(err)
 			return

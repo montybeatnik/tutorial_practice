@@ -45,6 +45,21 @@ func (d *DeviceStorer) GetById(id uint) (Device, error) {
 	return dev, nil
 }
 
+func (d *DeviceStorer) GetByHostname(hostname string) (Device, error) {
+
+	var dev Device
+
+	q := `SELECT devices.id, devices.created_at, hostname, loopback,  hardware.vendor, hardware.model, software.version from devices
+	JOIN hardware on hardware.id = hardware_id
+	JOIN software on software.id = software_id
+	where devices.hostname = $1`
+	err := d.db.QueryRow(q, hostname).Scan(&dev.ID, &dev.CreatedAt, &dev.Hostname, &dev.Loopback, &dev.Hardware.Vendor, &dev.Hardware.Model, &dev.Software.Version)
+	if err != nil {
+		return dev, err
+	}
+	return dev, nil
+}
+
 func (d *DeviceStorer) Create(dev Device) error {
 	_, err := d.db.Exec(`INSERT INTO devices (created_at, hostname, loopback, hardware_id, software_id) VALUES(now(), $1, $2, $3, $4) RETURNING id`, dev.Hostname, dev.Loopback, dev.Hardware.ID, dev.Software.ID)
 	if err != nil {
