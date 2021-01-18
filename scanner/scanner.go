@@ -1,15 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"net"
-	"strings"
 	"time"
 
 	"github.com/montybeatnik/tutorial_practice/autochecks"
-	"github.com/pkg/errors"
 )
 
 func Hosts(cidr string) ([]string, error) {
@@ -44,44 +41,46 @@ func inc(ip net.IP) {
 	}
 }
 
-func getVer(ip string) (autochecks.SoftwareVersion, error) {
-	var ac autochecks.SoftwareVersion
-	p := autochecks.Params{
-		IP: ip,
+func getVer(ipStream chan string, output chan autochecks.SoftwareVersion) {
+
+	for ip := range ipStream {
+		var ac autochecks.SoftwareVersion
+		p := autochecks.Params{
+			IP: ip,
+		}
+		_, err := ac.Run(p)
+		if err != nil {
+			log.Printf("%v failed. %v", ip, err)
+		}
+		output <- ac
 	}
-	_, err := ac.Run(p)
-	if err != nil {
-		return ac, errors.Wrap(err, "autocheck failed")
-	}
-	return ac, nil
 }
 
-func updateDB(v autochecks.SoftwareVersion) error {
-	fmt.Println("Some table updated here...")
-	output := v.SoftwareInformation
-	fmt.Println(output.HostName)
-	fmt.Println(output.JunosVersion)
-	fmt.Println("done")
-	return nil
+func updateDB(output chan autochecks.SoftwareVersion) {
+	for ac := range output {
+		fmt.Println(ac.SoftwareInformation.HostName)
+		fmt.Println(ac.SoftwareInformation.JunosVersion)
+	}
 }
 
 func main() {
+	// define channels
+	ipStream := make(chan string)
+	swVerStream := make(chan autochecks.SoftwareVersion)
+
 	start := time.Now()
-	tmp, err := Hosts("10.1.1.48/29")
+	subnet, err := Hosts("10.1.1.48/29")
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, ip := range tmp {
-		scanner := bufio.NewScanner(strings.NewReader(ip))
-		fmt.Println(ip)
-		for scanner.Scan() {
-			ver, err := getVer(ip)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-			updateDB(ver)
-		}
+
+	go getVer(ipStream, swVerStream)
+
+	go updateDB(swVerStream)
+
+	for _, ip := range subnet {
+		// send ip onto the ipStream channel
+		ipStream <- ip
 	}
 	fmt.Printf("time elapsed: %v\n", time.Since(start))
 }
