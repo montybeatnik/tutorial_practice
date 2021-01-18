@@ -3,9 +3,9 @@ package autochecks
 import (
 	"bytes"
 	"encoding/xml"
-	"fmt"
 
 	"github.com/montybeatnik/tutorial_practice/devcon"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -45,7 +45,7 @@ func (sv *SoftwareVersion) Run(p Params) (interface{}, error) {
 	c := devcon.NewConfig(connInfo)
 	buf, err := devcon.RunCmd(c)
 	if err != nil {
-		return sv, fmt.Errorf("Problem getting %v output!: %w", p.IP, err)
+		return sv, errors.Wrap(err, "reason")
 	}
 	sv.Mapper(buf)
 	return sv, nil
