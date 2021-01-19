@@ -66,13 +66,13 @@ func updateDB(output chan autochecks.SoftwareVersion) {
 func main() {
 
 	start := time.Now()
-	workerPoolSize := 4
+	workerPoolSize := 16
 	// define channels
 	ipStream := make(chan string)
 
 	var wg sync.WaitGroup
 
-	subnet, err := Hosts("10.1.1.48/28")
+	subnet, err := Hosts("10.1.1.0/24")
 	if err != nil {
 		log.Fatal(err)
 	}
