@@ -51,7 +51,8 @@ func RunManyCmds(c *ConnInfo) (bytes.Buffer, error) {
 }
 
 // DifferSet takes in a pointer to ConnInfo
-// and returns a buffer and an error if nothing goes wrong
+// and returns a buffer and an error if nothing goes wrong.
+// You need only supply the IP and the config because it will be rolled back.
 func DifferSet(c *ConnInfo) (bytes.Buffer, error) {
 
 	// JunOS CLI arguments to provide a diff
@@ -72,9 +73,9 @@ func DifferSet(c *ConnInfo) (bytes.Buffer, error) {
 }
 
 // PusherSet Pushes config to the device
-// It drops into the device's config exclusive mode, 
-// does a commit check and a 'show | compare' as well as applies a commit message. 
-// You have to supply the config in set format and a meaningful commit message. 
+// It drops into the device's config exclusive mode,
+// does a commit check and a 'show | compare' as well as applies a commit message.
+// You have to supply the config in set format and a meaningful commit message.
 // The func formats everything for you.
 func PusherSet(c *ConnInfo) (bytes.Buffer, error) {
 	cc := fmt.Sprintf("commit and-quit comment %v", c.CommitComment)
@@ -95,7 +96,7 @@ func PusherSet(c *ConnInfo) (bytes.Buffer, error) {
 }
 
 // PusherNID Pushes config to a NID
-func PusherNID(c *ConnInfo)  (bytes.Buffer, error)  {
+func PusherNID(c *ConnInfo) (bytes.Buffer, error) {
 	c.Commands = []string{
 		c.Conf,
 		"exit",

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	"github.com/montybeatnik/tutorial_practice/autochecks"
@@ -41,19 +42,18 @@ func inc(ip net.IP) {
 	}
 }
 
-func getVer(ipStream chan string, output chan autochecks.SoftwareVersion) {
-
-	for ip := range ipStream {
-		var ac autochecks.SoftwareVersion
-		p := autochecks.Params{
-			IP: ip,
-		}
-		_, err := ac.Run(p)
-		if err != nil {
-			log.Printf("%v failed. %v", ip, err)
-		}
-		output <- ac
+func getVer(ip string) {
+	fmt.Printf("Start processing %v\n", ip)
+	var ac autochecks.SoftwareVersion
+	p := autochecks.Params{
+		IP: ip,
 	}
+	_, err := ac.Run(p)
+	if err != nil {
+		log.Printf("%v failed. %v", ip, err)
+	}
+	fmt.Println(ac.SoftwareInformation.HostName, ac.SoftwareInformation.JunosVersion)
+	fmt.Printf("Finish processing %v\n", ip)
 }
 
 func updateDB(output chan autochecks.SoftwareVersion) {
@@ -64,23 +64,40 @@ func updateDB(output chan autochecks.SoftwareVersion) {
 }
 
 func main() {
-	// define channels
-	ipStream := make(chan string)
-	swVerStream := make(chan autochecks.SoftwareVersion)
 
 	start := time.Now()
-	subnet, err := Hosts("10.1.1.48/29")
+	workerPoolSize := 4
+	// define channels
+	ipStream := make(chan string)
+
+	var wg sync.WaitGroup
+
+	subnet, err := Hosts("10.1.1.48/28")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	go getVer(ipStream, swVerStream)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for i := 0; i < workerPoolSize; i++ {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for ip := range ipStream {
+					getVer(ip)
+				}
+			}()
+		}
+	}()
 
-	go updateDB(swVerStream)
-
+	// Feeding the channel
 	for _, ip := range subnet {
-		// send ip onto the ipStream channel
 		ipStream <- ip
 	}
+	// close the input channel to signal we're done
+	close(ipStream)
+	// blocks until counter is back to zero
+	wg.Wait()
 	fmt.Printf("time elapsed: %v\n", time.Since(start))
 }
