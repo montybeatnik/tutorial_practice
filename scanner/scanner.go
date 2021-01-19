@@ -42,18 +42,21 @@ func inc(ip net.IP) {
 	}
 }
 
-func getVer(ip string) {
+func getVer(ip string) Result {
 	fmt.Printf("Start processing %v\n", ip)
 	var ac autochecks.SoftwareVersion
 	p := autochecks.Params{
 		IP: ip,
 	}
 	_, err := ac.Run(p)
-	if err != nil {
-		log.Printf("%v failed. %v", ip, err)
+	res := Result{
+		Hostname: ac.SoftwareInformation.HostName,
+		IP:       ip,
+		Version:  ac.SoftwareInformation.JunosVersion,
+		Error:    err,
 	}
-	fmt.Println(ac.SoftwareInformation.HostName, ac.SoftwareInformation.JunosVersion)
-	fmt.Printf("Finish processing %v\n", ip)
+	fmt.Printf("Finished processing %v\n", ip)
+	return res
 }
 
 func updateDB(output chan autochecks.SoftwareVersion) {
@@ -63,21 +66,37 @@ func updateDB(output chan autochecks.SoftwareVersion) {
 	}
 }
 
-func main() {
+type Results struct {
+	Container []Result
+}
 
-	start := time.Now()
-	workerPoolSize := 16
+type Result struct {
+	Hostname string
+	IP       string
+	Version  string
+	Error    error
+}
+
+func Scanner() Results {
+
+	workerPoolSize := 4
 	// define channels
 	ipStream := make(chan string)
 
 	var wg sync.WaitGroup
 
-	subnet, err := Hosts("10.1.1.0/24")
+	subnetOne, err := Hosts("10.63.244.0/28")
+	if err != nil {
+		log.Fatal(err)
+	}
+	subnetTwo, err := Hosts("10.63.244.16/28")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	var results Results
 	wg.Add(1)
+	// a closure to control the queue
 	go func() {
 		defer wg.Done()
 		for i := 0; i < workerPoolSize; i++ {
@@ -85,19 +104,36 @@ func main() {
 			go func() {
 				defer wg.Done()
 				for ip := range ipStream {
-					getVer(ip)
+					res := getVer(ip)
+					results.Container = append(results.Container, res)
 				}
 			}()
 		}
 	}()
 
+	subnets := [][]string{subnetOne, subnetTwo}
 	// Feeding the channel
-	for _, ip := range subnet {
-		ipStream <- ip
+	for _, subnet := range subnets {
+		for _, ip := range subnet {
+			ipStream <- ip
+		}
 	}
 	// close the input channel to signal we're done
 	close(ipStream)
 	// blocks until counter is back to zero
 	wg.Wait()
+	return results
+}
+
+func main() {
+	start := time.Now()
+	results := Scanner()
+	for _, res := range results.Container {
+		if res.Error != nil {
+			fmt.Println(res.IP, res.Error)
+			continue
+		}
+		fmt.Println(res.Hostname, res.Version)
+	}
 	fmt.Printf("time elapsed: %v\n", time.Since(start))
 }
