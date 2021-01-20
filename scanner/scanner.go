@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"sync"
+	"text/tabwriter"
 	"time"
 
 	"github.com/montybeatnik/tutorial_practice/autochecks"
@@ -77,19 +79,28 @@ type Result struct {
 	Error    error
 }
 
-func Scanner() Results {
+type Crawler interface {
+	// Methods here
 
-	workerPoolSize := 4
+}
+
+func SubnetScanner() Results {
+
+	workerPoolSize := 64 // 128
 	// define channels
 	ipStream := make(chan string)
 
 	var wg sync.WaitGroup
 
-	subnetOne, err := Hosts("10.63.244.0/28")
+	subnetOne, err := Hosts("10.63.240.0/20") // main loopback range
 	if err != nil {
 		log.Fatal(err)
 	}
-	subnetTwo, err := Hosts("10.63.244.16/28")
+	subnetTwo, err := Hosts("10.63.130.0/23") // geoverse
+	if err != nil {
+		log.Fatal(err)
+	}
+	subnetThree, err := Hosts("10.1.1.0/24") // core
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -104,19 +115,21 @@ func Scanner() Results {
 			go func() {
 				defer wg.Done()
 				for ip := range ipStream {
+					// augmenting here
 					res := getVer(ip)
+					// updateDB(res)
 					results.Container = append(results.Container, res)
 				}
 			}()
 		}
 	}()
 
-	subnets := [][]string{subnetOne, subnetTwo}
+	subnets := [][]string{subnetOne, subnetTwo, subnetThree}
 	// Feeding the channel
 	for _, subnet := range subnets {
-		for _, ip := range subnet {
+		for _,
+		}ip := range subnet {
 			ipStream <- ip
-		}
 	}
 	// close the input channel to signal we're done
 	close(ipStream)
@@ -127,13 +140,20 @@ func Scanner() Results {
 
 func main() {
 	start := time.Now()
-	results := Scanner()
+	// The bulk of the work happens here.
+	results := SubnetScanner()
+	// Just here for pretty printing (will go away).
+	const padding = 3
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, '-', tabwriter.AlignRight|tabwriter.Debug)
+	defer w.Flush()
+	// The loop.
 	for _, res := range results.Container {
 		if res.Error != nil {
-			fmt.Println(res.IP, res.Error)
+			fmt.Fprintf(w, "%v\t%v\n", res.IP, res.Error)
 			continue
 		}
-		fmt.Println(res.Hostname, res.Version)
+		fmt.Fprintf(w, "%v\t%v\n", res.Hostname, res.Version)
 	}
+	// keep track of the duration.
 	fmt.Printf("time elapsed: %v\n", time.Since(start))
 }
