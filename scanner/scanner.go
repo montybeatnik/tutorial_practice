@@ -81,7 +81,9 @@ type Result struct {
 
 type Crawler interface {
 	// Methods here
-
+	SubnetScanner()
+	ComplianceScanner()
+	Rebaser()
 }
 
 func SubnetScanner() Results {
@@ -127,9 +129,9 @@ func SubnetScanner() Results {
 	subnets := [][]string{subnetOne, subnetTwo, subnetThree}
 	// Feeding the channel
 	for _, subnet := range subnets {
-		for _,
-		}ip := range subnet {
+		for _, ip := range subnet {
 			ipStream <- ip
+		}
 	}
 	// close the input channel to signal we're done
 	close(ipStream)
