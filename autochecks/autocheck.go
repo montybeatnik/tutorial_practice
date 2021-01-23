@@ -5,9 +5,9 @@ type Params struct {
 	Args []string
 }
 
-// AutoCheck is the API or the method signature to represent what needs to happen
+// Check is the API or the method signature to represent what needs to happen
 // for an autocheck implementation
-type AutoCheck interface {
+type Check interface {
 	// Run issues the command against the network element
 	Run(p Params) (interface{}, error)
 }
