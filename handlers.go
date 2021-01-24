@@ -13,6 +13,7 @@ import (
 	"github.com/montybeatnik/tutorial_practice/autochecks"
 	"github.com/montybeatnik/tutorial_practice/driver"
 	"github.com/montybeatnik/tutorial_practice/models"
+	"github.com/montybeatnik/tutorial_practice/scan"
 	"github.com/pkg/errors"
 )
 
@@ -148,5 +149,29 @@ func (s *server) handleDeviceHostname() http.HandlerFunc {
 			return
 		}
 		t.Execute(w, d)
+	}
+}
+
+func (s *server) HandleScan() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db, err := initializeDevPSQL()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		devService := models.NewDeviceStore(db)
+		devices, err := devService.AllDevices()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		var verAC autochecks.SoftwareVersion
+		data := scan.Devices(devices, &verAC)
+		t, err := template.ParseFiles("views/software_ver_results.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w, data)
 	}
 }

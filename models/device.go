@@ -5,6 +5,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/pkg/errors"
 )
 
 // Devicer lays out the methods to interace with the device
@@ -28,6 +29,33 @@ func NewDeviceStore(db *sql.DB) DeviceStorer {
 
 type DeviceStorer struct {
 	db *sql.DB
+}
+
+func (d *DeviceStorer) AllDevices() ([]Device, error) {
+
+	var devices []Device
+
+	q := `SELECT devices.id, devices.created_at, hostname, loopback,  hardware.vendor, hardware.model, software.version from devices
+	JOIN hardware on hardware.id = hardware_id
+	JOIN software on software.id = software_id`
+	rows, err := d.db.Query(q)
+	if err != nil {
+		return devices, errors.Wrap(err, "all devices failed")
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var device Device
+		err := rows.Scan(&device.ID, &device.CreatedAt, &device.Hostname, &device.Loopback, &device.Vendor, &device.Model, &device.Version)
+		if err != nil {
+			return devices, errors.Wrap(err, "getting rows failed")
+		}
+		devices = append(devices, device)
+	}
+	err = rows.Err()
+	if err != nil {
+		return devices, errors.Wrap(err, "row error")
+	}
+	return devices, nil
 }
 
 func (d *DeviceStorer) GetById(id uint) (Device, error) {
