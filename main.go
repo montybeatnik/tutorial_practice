@@ -38,12 +38,12 @@ func run() error {
 	r := mux.NewRouter()
 	srv := &server{
 		// db:     db,
-		router: r,
+		Router: r,
 	}
-	srv.router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
+	srv.Router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 	srv.routes()
 	log.Println("server listening on localhost:8000...")
-	if err := http.ListenAndServe(":8000", srv.router); err != nil {
+	if err := http.ListenAndServe(":8000", srv.Router); err != nil {
 		return err
 	}
 	return nil

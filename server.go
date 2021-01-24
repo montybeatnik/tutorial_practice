@@ -8,6 +8,6 @@ import (
 )
 
 type server struct {
-	db     *sql.DB
-	router *mux.Router
+	Router *mux.Router
+	DB     *sql.DB
 }
