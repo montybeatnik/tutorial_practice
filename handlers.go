@@ -17,7 +17,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *server) handleHome() http.HandlerFunc {
+func (s *Server) handleHome() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.ParseFiles("views/home.html")
 		if err != nil {
@@ -28,7 +28,7 @@ func (s *server) handleHome() http.HandlerFunc {
 	}
 }
 
-func (s *server) handleAbout() http.HandlerFunc {
+func (s *Server) handleAbout() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.ParseFiles("views/about.html")
 		if err != nil {
@@ -39,7 +39,7 @@ func (s *server) handleAbout() http.HandlerFunc {
 	}
 }
 
-func (s *server) handleOutline() http.HandlerFunc {
+func (s *Server) handleOutline() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.ParseFiles("views/outline.html")
 		if err != nil {
@@ -50,7 +50,7 @@ func (s *server) handleOutline() http.HandlerFunc {
 	}
 }
 
-func (s *server) handleDeviceShowVersion() http.HandlerFunc {
+func (s *Server) handleDeviceShowVersion() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var swVer autochecks.SoftwareVersion
 		p := autochecks.Params{
@@ -81,7 +81,7 @@ func initializeDevPSQL() (*sql.DB, error) {
 	return db, nil
 }
 
-func (s *server) handleDeviceID() http.HandlerFunc {
+func (s *Server) handleDeviceID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		idStr := vars["id"]
@@ -115,7 +115,7 @@ type deviceForm struct {
 }
 
 // handleDeviceHostname PUT
-func (s *server) handleDeviceHostname() http.HandlerFunc {
+func (s *Server) handleDeviceHostname() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var decoder = schema.NewDecoder()
@@ -152,7 +152,7 @@ func (s *server) handleDeviceHostname() http.HandlerFunc {
 	}
 }
 
-func (s *server) HandleScan() http.HandlerFunc {
+func (s *Server) HandleScan() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		db, err := initializeDevPSQL()
 		if err != nil {

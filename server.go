@@ -7,7 +7,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type server struct {
+type Server struct {
 	Router *mux.Router
 	DB     *sql.DB
 }
+
+func (s *Server) Initialize(user, password, dbname string) {}
+func (s *Server) Run(addr string)                          {}

@@ -1,6 +1,6 @@
 package main
 
-func (s *server) routes() {
+func (s *Server) routes() {
 	s.Router.HandleFunc("/", s.handleHome())
 	s.Router.HandleFunc("/about", s.handleAbout())
 	s.Router.HandleFunc("/outline", s.handleOutline())
