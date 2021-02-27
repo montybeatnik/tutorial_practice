@@ -19,13 +19,13 @@ const (
 )
 
 func main() {
-	s := Server{}
-	s.Initialize(
-	  os.Getenv(“SERVER_DB_USERNAME”),
-	  os.Getenv(“SERVER_DB_PASSWORD”),
-	  os.Getenv(“SERVER_DB_NAME”),
-	)
-	a.Run(“:8001”)
+	// s := Server{}
+	// s.Initialize(
+	// 	os.Getenv("SERVER_DB_USERNAME"),
+	// 	os.Getenv("SERVER_DB_PASSWORD"),
+	// 	os.Getenv("SERVER_DB_NAME"),
+	// )
+	// s.Run(":8001")
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
