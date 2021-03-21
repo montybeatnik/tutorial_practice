@@ -47,7 +47,7 @@ func (alm *ChassisAlarms) Mapper(b bytes.Buffer) {
 }
 
 // Run Issues the command against the device and returns the object
-func (alm *ChassisAlarms) Run(p Params) (interface{}, error) {
+func (alm *ChassisAlarms) Run(p Params) (bytes.Buffer, error) {
 	connInfo := devcon.ConnInfo{
 		IP:      p.IP,
 		Command: chassisAlarmsCMD,
@@ -55,10 +55,9 @@ func (alm *ChassisAlarms) Run(p Params) (interface{}, error) {
 	c := devcon.NewConfig(connInfo)
 	buf, err := devcon.RunCmd(c)
 	if err != nil {
-		return alm, fmt.Errorf("Problem getting %v output!: %w", p.IP, err)
+		return buf, fmt.Errorf("Problem getting %v output!: %w", p.IP, err)
 	}
-	alm.Mapper(buf)
-	return alm, nil
+	return buf, nil
 }
 
 // SystemAlarms  holds the data of the "show system alarms" commmand

@@ -2,14 +2,16 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
 type Server struct {
-	Router *mux.Router
-	DB     *sql.DB
+	Template *template.Template
+	Router   *mux.Router
+	DB       *sql.DB
 }
 
 func (s *Server) Initialize(user, password, dbname string) {}

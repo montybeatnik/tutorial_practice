@@ -37,10 +37,7 @@ func TestSubnet(t *testing.T) {
 	}
 	nets := [][]string{hostsOne, hostsTwo}
 	var swVer autochecks.SoftwareVersion
-	results := Subnets(nets, &swVer)
-	for _, r := range results {
-		t.Log(r.Error.Error())
-	}
+	Subnets(nets, &swVer)
 }
 
 // func BenchmarkSubnets(b *testing.B) {

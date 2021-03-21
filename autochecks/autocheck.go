@@ -1,5 +1,7 @@
 package autochecks
 
+import "bytes"
+
 type Params struct {
 	IP   string
 	Args []string
@@ -9,5 +11,5 @@ type Params struct {
 // for an autocheck implementation
 type Check interface {
 	// Run issues the command against the network element
-	Run(p Params) (interface{}, error)
+	Run(p Params) (bytes.Buffer, error)
 }

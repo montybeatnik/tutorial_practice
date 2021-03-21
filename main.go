@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/montybeatnik/tutorial_practice/views"
 	"github.com/pkg/errors"
 )
 
@@ -19,13 +20,12 @@ const (
 )
 
 func main() {
-	// s := Server{}
-	// s.Initialize(
-	// 	os.Getenv("SERVER_DB_USERNAME"),
-	// 	os.Getenv("SERVER_DB_PASSWORD"),
-	// 	os.Getenv("SERVER_DB_NAME"),
-	// )
-	// s.Run(":8001")
+
+	homeView = views.NewView("views/home.html")
+	aboutView = views.NewView("views/about.html")
+	outlineView = views.NewView("views/outline.html")
+	indexView = views.NewView("views/index.html")
+
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
