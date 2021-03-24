@@ -3,7 +3,7 @@ package views
 import "html/template"
 
 func NewView(files ...string) *View {
-	files = append(files, "views/layouts/footer.html")
+	files = append(files, "/Users/chrishern/go/src/github.com/montybeatnik/tutorial_practice/views/layouts/footer.html")
 	t, err := template.ParseFiles(files...)
 	if err != nil {
 		panic(err)

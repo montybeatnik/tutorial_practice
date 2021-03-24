@@ -21,10 +21,10 @@ const (
 
 func main() {
 
-	homeView = views.NewView("../views/home.html")
-	aboutView = views.NewView("../views/about.html")
-	outlineView = views.NewView("../views/outline.html")
-	indexView = views.NewView("../views/index.html")
+	homeView = views.NewView("../../views/home.html")
+	aboutView = views.NewView("../../views/about.html")
+	outlineView = views.NewView("../../views/outline.html")
+	indexView = views.NewView("../../views/index.html")
 
 	if err := run(); err != nil {
 		log.Fatal(err)

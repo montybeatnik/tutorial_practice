@@ -5,7 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	"github.com/montybeatnik/tutorial_practice/devcon"
+	"github.com/montybeatnik/tutorial_practice/pkg/devcon"
 )
 
 const (

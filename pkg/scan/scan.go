@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/montybeatnik/tutorial_practice/autochecks"
-	"github.com/montybeatnik/tutorial_practice/models"
+	"github.com/montybeatnik/tutorial_practice/pkg/autochecks"
+	"github.com/montybeatnik/tutorial_practice/pkg/models"
 )
 
 func checkError(e error) {

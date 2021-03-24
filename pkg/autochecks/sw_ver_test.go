@@ -3,7 +3,7 @@ package autochecks
 import (
 	"testing"
 
-	"github.com/montybeatnik/tutorial_practice/models"
+	"github.com/montybeatnik/tutorial_practice/pkg/models"
 )
 
 var wrongVersion = "19.3R3.6"
