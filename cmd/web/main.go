@@ -50,7 +50,10 @@ func run() error {
 	srv.Router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 	srv.routes()
 	log.Println("server listening on localhost:8000...")
-	if err := http.ListenAndServe(":8000", srv.Router); err != nil {
+	if err := http.ListenAndServeTLS(":8000",
+		"/Users/chrishern/go/src/github.com/montybeatnik/tutorial_practice/cmd/web/server.crt", // env var
+		"/Users/chrishern/go/src/github.com/montybeatnik/tutorial_practice/cmd/web/server.key", // env var
+		srv.Router); err != nil {
 		return err
 	}
 	return nil
