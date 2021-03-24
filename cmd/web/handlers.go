@@ -10,10 +10,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
-	"github.com/montybeatnik/tutorial_practice/autochecks"
 	"github.com/montybeatnik/tutorial_practice/driver"
-	"github.com/montybeatnik/tutorial_practice/models"
-	"github.com/montybeatnik/tutorial_practice/scan"
+	"github.com/montybeatnik/tutorial_practice/pkg/autochecks"
+	"github.com/montybeatnik/tutorial_practice/pkg/models"
+	"github.com/montybeatnik/tutorial_practice/pkg/scan"
 	"github.com/montybeatnik/tutorial_practice/views"
 	"github.com/pkg/errors"
 )

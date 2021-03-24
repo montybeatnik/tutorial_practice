@@ -1,7 +1,0 @@
-export SERVER_DB_USERNAME=postgres
-export SERVER_DB_PASSWORD=postgres
-export SERVER_DB_NAME=tutorial_practice
-
-unset SERVER_DB_USERNAME
-unset SERVER_DB_PASSWORD
-unset SERVER_DB_NAME

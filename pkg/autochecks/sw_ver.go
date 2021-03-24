@@ -3,7 +3,7 @@ package autochecks
 import (
 	"bytes"
 
-	"github.com/montybeatnik/tutorial_practice/devcon"
+	"github.com/montybeatnik/tutorial_practice/pkg/devcon"
 	"github.com/pkg/errors"
 )
 

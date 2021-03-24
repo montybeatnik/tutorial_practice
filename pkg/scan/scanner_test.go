@@ -3,7 +3,7 @@ package scan
 import (
 	"testing"
 
-	"github.com/montybeatnik/tutorial_practice/autochecks"
+	"github.com/montybeatnik/tutorial_practice/pkg/autochecks"
 )
 
 func TestHosts(t *testing.T) {
